@@ -1,214 +1,272 @@
-# Autism Detection MLflow Framework
+# Sistema de Deep Learning Modular
 
-A robust, object-oriented framework for running and tracking machine learning experiments for Autism Spectrum Disorder (ASD) detection using facial images.
+Um sistema modular e escalável para experimentar com diferentes arquiteturas de deep learning em tarefas de classificação de imagens, com tracking completo de experimentos usando MLflow.
 
-## Project Structure
+## 🏗️ Arquitetura Modular
+
+O projeto foi redesenhado com uma arquitetura altamente modular onde cada modelo tem seu próprio arquivo e configurações:
 
 ```
-.
-├── AutismDataset/          # Your dataset directory
-│   ├── train/
-│   │   ├── Autistic/
-│   │   └── Non_Autistic/
-│   ├── valid/
-│   │   ├── Autistic/
-│   │   └── Non_Autistic/
-│   └── test/
-│       ├── Autistic/
-│       └── Non_Autistic/
-├── config.py               # Central configuration file
-├── base_experiment.py      # Base class for all experiments
-├── data_utils.py          # Data loading utilities
-├── metrics_utils.py       # Metrics calculation and visualization
-├── example_efficientnet_experiment.py  # Example implementation
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
+models/
+├── __init__.py
+├── base_model.py           # Classe base abstrata
+├── model_registry.py       # Registro central de modelos
+├── simple_vgg.py          # Modelo VGG simplificado
+├── resnet50_model.py      # ResNet50 com transfer learning
+├── mobilenetv2_model.py   # MobileNetV2 com transfer learning
+├── densenet121_model.py   # DenseNet121 com transfer learning
+├── efficientnetb0_model.py # EfficientNetB0 com transfer learning
+├── inceptionv3_model.py   # InceptionV3 com transfer learning
+└── cnn_custom.py          # Arquitetura CNN customizada
 ```
 
-## Installation
+## ✨ Características Principais
 
-1. Clone this repository
-2. Install dependencies:
+### 🔧 Modularidade Extrema
+- **Arquivos separados para cada modelo**: Cada arquitetura tem seu próprio arquivo Python
+- **Configurações embutidas**: Cada modelo define suas próprias configurações padrão
+- **Registro central**: Sistema de registro para gerenciar todos os modelos disponíveis
+- **Fácil extensão**: Adicionar novos modelos é simples e não requer mudanças no código principal
+
+### 📊 Tracking Completo com MLflow
+- **Parâmetros**: Todos os hiperparâmetros são automaticamente registrados
+- **Métricas**: Acompanhamento de accuracy, F1-score, precision, recall, etc.
+- **Artefatos**: Modelos salvos, gráficos de confusão, relatórios de avaliação
+- **Experimentos organizados**: Cada modelo gera um experimento separado
+
+### 🎯 Configurações Flexíveis
+- **Por modelo**: Cada modelo tem suas próprias configurações otimizadas
+- **Estratégias de treinamento**: Freeze/unfreeze, learning rates, batch sizes específicos
+- **Data augmentation**: Configurável por modelo
+- **Callbacks personalizados**: Early stopping, learning rate reduction, checkpointing
+
+## 🚀 Modelos Disponíveis
+
+### 1. **SimpleVGG** (`simple_vgg.py`)
+- Arquitetura VGG simplificada
+- Configurações: 100 épocas, lr=0.001, batch_size=32
+- Ideal para: Baseline e comparação
+
+### 2. **ResNet50** (`resnet50_model.py`)
+- Transfer learning com ResNet50 pré-treinado
+- Configurações: 150 épocas, lr=0.0001, batch_size=16
+- Estratégia: Freeze inicial + unfreeze na época 50
+
+### 3. **MobileNetV2** (`mobilenetv2_model.py`)
+- Modelo leve e eficiente
+- Configurações: 200 épocas, lr=0.0001, batch_size=32
+- Estratégia: Freeze inicial + unfreeze na época 100
+
+### 4. **DenseNet121** (`densenet121_model.py`)
+- Arquitetura densa com conexões diretas
+- Configurações: 120 épocas, lr=0.0001, batch_size=16
+- Estratégia: Freeze inicial + unfreeze na época 60
+
+### 5. **EfficientNetB0** (`efficientnetb0_model.py`)
+- Modelo eficiente com scaling automático
+- Configurações: 180 épocas, lr=0.0001, batch_size=16
+- Estratégia: Freeze inicial + unfreeze na época 90
+
+### 6. **InceptionV3** (`inceptionv3_model.py`)
+- Arquitetura com múltiplas escalas
+- Configurações: 250 épocas, lr=0.0001, batch_size=8
+- Estratégia: Freeze inicial + unfreeze na época 125
+
+### 7. **CNN_Custom** (`cnn_custom.py`)
+- Arquitetura customizada complexa
+- Configurações: 2000 épocas, lr=0.001, batch_size=32
+- Recursos: Batch normalization, global pooling configurável
+
+## 📁 Estrutura do Projeto
+
+```
+├── models/                     # Pacote de modelos
+│   ├── __init__.py
+│   ├── base_model.py          # Classe base abstrata
+│   ├── model_registry.py      # Registro central
+│   ├── resnet50_model.py      # ResNet50
+│   ├── mobilenetv2_model.py   # MobileNetV2
+│   ├── densenet121_model.py   # DenseNet121
+│   ├── efficientnetb0_model.py # EfficientNetB0
+│   ├── inceptionv3_model.py   # InceptionV3
+├── data/                      # Diretório de dados
+├── config.yaml               # Configuração geral
+├── data_handler.py           # Gerenciamento de dados
+├── model_factory.py          # Factory de modelos
+├── trainer.py                # Sistema de treinamento
+├── evaluator.py              # Avaliação de modelos
+├── main.py                   # Script principal
+├── inference.py              # Inferência
+└── requirements.txt          # Dependências
+```
+
+## ⚙️ Configuração
+
+### 1. Instalação das Dependências
 ```bash
 pip install -r requirements.txt
 ```
 
-## Quick Start
-
-### 1. Run the Example EfficientNet Experiment
-
-```bash
-python example_efficientnet_experiment.py
+### 2. Configuração do Dataset
+Organize seu dataset na estrutura:
+```
+data/
+├── train/
+│   ├── class1/
+│   ├── class2/
+│   └── ...
+├── valid/
+│   ├── class1/
+│   ├── class2/
+│   └── ...
+└── test/
+    ├── class1/
+    ├── class2/
+    └── ...
 ```
 
-### 2. View Results in MLflow UI
+### 3. Configuração Geral (`config.yaml`)
+```yaml
+# MLflow Configuration
+mlflow:
+  experiment_name: "autism_detection_experiments"
+  tracking_uri: "file:./mlruns"
 
+# Data Configuration
+data:
+  dataset_path: "data"
+  image_height: 224
+  image_width: 224
+  channels: 3
+  batch_size: 32
+  validation_split: 0.15
+  test_split: 0.15
+
+# Training Configuration (padrão - será sobrescrito por configurações específicas dos modelos)
+training:
+  epochs: 50
+  initial_learning_rate: 0.001
+  optimizer: "adam"
+  loss: "categorical_crossentropy"
+  metrics: ["accuracy"]
+
+# Model Configuration
+models:
+  model_list: []  # Adicione modelos conforme necessário
+```
+
+## 🚀 Uso
+
+### Execução Completa
+```bash
+python main.py
+```
+
+### Execução de Modelo Específico
+```python
+from trainer import ExperimentTrainer
+from model_factory import ModelFactory
+
+# Carregar configuração
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+
+# Inicializar trainer
+trainer = ExperimentTrainer(config)
+
+# Treinar modelo específico
+result = trainer.train_model("ResNet50")
+```
+
+### Adicionando um Novo Modelo
+
+1. **Criar arquivo do modelo** (`models/meu_modelo.py`):
+```python
+from .base_model import BaseModel
+import tensorflow as tf
+
+class MeuModelo(BaseModel):
+    @classmethod
+    def get_model_name(cls) -> str:
+        return "MeuModelo"
+    
+    @classmethod
+    def get_default_config(cls) -> dict:
+        return {
+            "epochs": 100,
+            "initial_learning_rate": 0.001,
+            "batch_size": 32,
+            # ... outras configurações
+        }
+    
+    def build(self, input_shape, num_classes, config=None):
+        # Implementar arquitetura do modelo
+        pass
+```
+
+2. **Registrar no registry** (`models/model_registry.py`):
+```python
+from .meu_modelo import MeuModelo
+
+_models = {
+    # ... modelos existentes
+    'MeuModelo': MeuModelo
+}
+```
+
+3. **Adicionar à lista de modelos** (`config.yaml`):
+```yaml
+models:
+  model_list:
+    - "MeuModelo"
+```
+
+## 📊 Visualização de Resultados
+
+### MLflow UI
 ```bash
 mlflow ui
 ```
+Acesse: http://localhost:5000
 
-Then open http://localhost:5000 in your browser.
+**Recursos disponíveis no MLflow:**
+- 📈 Gráficos de métricas de treinamento
+- 📊 Comparação de modelos lado a lado
+- 🎯 Análise detalhada de parâmetros
+- 💾 Download de modelos treinados
+- 📋 Relatórios de avaliação
+- 🔍 Filtros e ordenação por métricas
 
-## Creating New Experiments
+## 🔍 Funcionalidades Avançadas
 
-To create a new experiment for a different model, create a new Python file that inherits from `BaseExperiment`:
+### Configurações Customizadas por Modelo
+Cada modelo define suas próprias configurações:
+- **Épocas**: Diferentes durações de treinamento
+- **Learning rates**: Otimizados para cada arquitetura
+- **Batch sizes**: Ajustados para memória disponível
+- **Estratégias de freeze/unfreeze**: Para transfer learning
+- **Data augmentation**: Configurável por modelo
 
-```python
-from base_experiment import BaseExperiment
-import data_utils
-import metrics_utils
-import config
+### Callbacks Inteligentes
+- **Early Stopping**: Patience configurável por modelo
+- **Learning Rate Reduction**: Redução automática na plateau
+- **Model Checkpointing**: Salvamento do melhor modelo
+- **Unfreeze Callback**: Descongelamento automático de camadas
 
-class YourModelExperiment(BaseExperiment):
-    def __init__(self, your_params):
-        super().__init__()
-        # Initialize your parameters
-        
-    def prepare_data(self):
-        # Load and prepare your data
-        # Use utilities from data_utils.py
-        
-    def create_model(self):
-        # Define your model architecture
-        # Log model parameters using self.log_params()
-        
-    def train(self):
-        # Train your model
-        # Log metrics using self.log_metrics()
-        
-    def evaluate(self):
-        # Evaluate on test set
-        # Use utilities from metrics_utils.py
-```
+### Avaliação Abrangente
+- **Métricas**: Accuracy, Precision, Recall, F1-score
+- **Matriz de Confusão**: Visualização detalhada
+- **Relatórios**: Classificação completa
+- **Artefatos**: Gráficos e relatórios salvos
 
-## Framework Features
 
-### Base Experiment Class
-- Automatic MLflow tracking setup
-- Standardized experiment pipeline
-- Built-in error handling and logging
-- Dataset information logging
+Para adicionar novos modelos:
 
-### Data Utilities
-- Support for TensorFlow and PyTorch data loading
-- Built-in data augmentation options
-- Flexible image preprocessing
-- Support for different batch sizes and image sizes
+1. Crie um novo arquivo em `models/`
+2. Implemente a classe herdando de `BaseModel`
+3. Registre no `ModelRegistry`
+4. Adicione à lista de modelos no `config.yaml`
 
-### Metrics Utilities
-- Comprehensive classification metrics (accuracy, precision, recall, F1, AUC)
-- Confusion matrix visualization
-- ROC curves (for binary classification)
-- Precision-Recall curves
-- Training history plots
-- Classification report heatmaps
+## 📝 Licença
 
-### MLflow Integration
-- Automatic parameter logging
-- Step-wise metric tracking
-- Model versioning
-- Artifact storage (plots, model files, JSON data)
-- Experiment comparison
-
-## Running Multiple Experiments
-
-Create a script to run multiple experiments with different parameters:
-
-```python
-from example_efficientnet_experiment import EfficientNetExperiment
-
-# Define parameter combinations
-experiments = [
-    {"model_variant": "B0", "learning_rate": 0.001, "batch_size": 32},
-    {"model_variant": "B0", "learning_rate": 0.0001, "batch_size": 16},
-    {"model_variant": "B0", "learning_rate": 0.001, "batch_size": 32, "augment": False},
-]
-
-# Run all experiments
-for params in experiments:
-    experiment = EfficientNetExperiment(**params)
-    experiment.run()
-```
-
-## Creating Ensemble Models
-
-For ensemble experiments, you can create a new experiment class that loads multiple pre-trained models:
-
-```python
-class EnsembleExperiment(BaseExperiment):
-    def __init__(self, model_uris):
-        super().__init__()
-        self.model_uris = model_uris  # MLflow model URIs
-        
-    def create_model(self):
-        # Load multiple models using mlflow.load_model()
-        self.models = []
-        for uri in self.model_uris:
-            model = mlflow.tensorflow.load_model(uri)
-            self.models.append(model)
-```
-
-## Tips for Organization
-
-1. **Folder Structure for Trials**: Create separate folders for different experiment types:
-   ```
-   experiments/
-   ├── standalone_models/
-   │   ├── efficientnet_experiments.py
-   │   ├── resnet_experiments.py
-   │   └── vgg_experiments.py
-   ├── yolo_pipelines/
-   │   ├── yolo_efficientnet_pipeline.py
-   │   └── yolo_resnet_pipeline.py
-   └── ensemble_models/
-       └── ensemble_experiments.py
-   ```
-
-2. **Naming Conventions**: Use descriptive run names that include key parameters:
-   ```python
-   run_name = f"EfficientNetB0_lr{learning_rate}_bs{batch_size}_aug{augment}"
-   ```
-
-3. **Parameter Sweeps**: Use configuration files or parameter grids:
-   ```python
-   param_grid = {
-       'learning_rate': [0.001, 0.0001],
-       'batch_size': [16, 32],
-       'model_variant': ['B0', 'B3']
-   }
-   ```
-
-## Comparing Results
-
-1. In MLflow UI:
-   - Sort by metrics (e.g., test_accuracy)
-   - Filter by parameters
-   - Use the Compare feature for detailed analysis
-   - Download artifacts for further analysis
-
-2. Programmatically:
-   ```python
-   import mlflow
-   
-   # Get all runs from an experiment
-   experiment = mlflow.get_experiment_by_name("ASD_Detection_Multi_Model")
-   runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
-   
-   # Find best run by accuracy
-   best_run = runs.loc[runs['metrics.test_accuracy'].idxmax()]
-   ```
-
-## Next Steps
-
-1. Implement additional model architectures (ResNet, VGG, MobileNet)
-2. Create YOLO-based detection pipelines
-3. Implement ensemble methods
-4. Add cross-validation support
-5. Create automated hyperparameter tuning scripts
-6. Build a custom dashboard using MLflow's API
-
-## Troubleshooting
-
-- If MLflow UI doesn't show experiments, check that `MLFLOW_TRACKING_URI` in `config.py` points to the correct location
-- For GPU memory issues, reduce batch size or image size
-- For slow training, ensure GPU is being used and consider reducing model complexity 
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para detalhes.

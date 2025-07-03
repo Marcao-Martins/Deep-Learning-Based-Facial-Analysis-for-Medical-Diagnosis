@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# MLflow
+mlruns/
+
+# Models
+models/
+*.h5
+*.keras
+*.pb
+*.ckpt
+
+# Artifacts
+artifacts/
+*.png
+*.jpg
+*.jpeg
+*.txt
+*.csv
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Dataset (se necessário)
+# AutismDataset/
+
+# Reports
+model_comparison_report.txt
+model_comparison.csv
+metrics_comparison.png 
